@@ -1,0 +1,77 @@
+pip install flask
+/your_project_folder
+|-- templates
+|   |-- base.html
+|   |-- home.html
+|   |-- exercises.html
+|-- app.py
+|-- exercises.json
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/exercises')
+def exercises():
+    # Load exercises from a JSON file
+    exercises = load_exercises('exercises.json')
+    return render_template('exercises.html', exercises=exercises)
+
+def load_exercises(file_path):
+    # Load exercises from a JSON file (you need to define the structure)
+    # Sample structure: {'exercise_id': {'question': '...', 'options': ['...', '...'], 'answer': '...'}}
+    # Load and return exercises
+    return exercises
+
+if __name__ == '__main__':
+    app.run(debug=True)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Educational Platform</title>
+    <!-- Add your stylesheets and scripts here -->
+</head>
+<body>
+    <header>
+        <h1>Your Educational Platform</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('exercises') }}">Exercises</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Welcome to Your Educational Platform!</h2>
+    <p>This platform is designed to help you learn and revise new vocabulary, chunks, lexis, and phrases.</p>
+{% endblock %}
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Exercises</h2>
+    <ul>
+        {% for exercise_id, exercise in exercises.items() %}
+            <li>
+                <h3>{{ exercise['question'] }}</h3>
+                <ul>
+                    {% for option in exercise['options'] %}
+                        <li>{{ option }}</li>
+                    {% endfor %}
+                </ul>
+                <p>Answer: {{ exercise['answer'] }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
